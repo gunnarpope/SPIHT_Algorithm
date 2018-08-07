@@ -56,9 +56,26 @@ def S(x, k):
 
     return thres
 
-def D(x_index):
-    """Returns a set of all offsprint in all later subbands of coefficient x[x_index]"""
-    return ([x_index, xindex + 1])
+def D_dyadic(index,level):
+    """
+    Inputs:
+        int index = indicies of coefficient vector of A5, D5, etc..
+        int level = the transformation level
+    Output:
+        Returns a list of sets that are the offspring of x[i]
+    """
+    offspring_sets = []
+
+    for L in range(level + 1)[1:]:
+        first = x_index
+        second = first + 1
+        offspring_sets.append([first, second])
+
+    return offspring_sets
+
+def Dsym(index, level):
+    print('todo:...')
+
 
 def get_lists():
     print ('The LIP is:'  , lip)
@@ -86,7 +103,9 @@ if __name__ == "__main__":
 
     import matplotlib.pyplot as plt
     # import a 1D wavelet vector taken from an EDA signal
-    x = np.load('wavelet_vector.npy')
+    # x = np.load('wavelet_vector.npy')
+    # print('This is A5: ',x[:12])
+    # print('This is D5: ', x[12:24])
     # plt.plot(x)
     # plt.show()
 
@@ -94,21 +113,26 @@ if __name__ == "__main__":
     sig = [x for x in range(128)]
 
     # Vector from Lu et al. 2000, "Wavelet Compression of ECG Signals by the SPIHT Algorithm", p851
+    # this is a 4-level dwt that uses no padding and dyadic scaling
     x = [59,-48,-25,21,12,13,-9,11,43,-7,8,6,-5,4,2,-3,22,11,5,-7,6,1,5,2,0,-2,-1,4,4,-2,3,1]
+
+    # the length of the A4,D4,D3,D2,D1 vectors
+    dwt_coeff_len = { 'A4' : 2,
+                      'D4' : 2,
+                      'D3' : 4,
+                      'D2' : 8,
+                      'D1' : 16}
+    print(dwt_coeff_len)
+
+    dwt_levels = 4
+
     # get the starting indicies of the coefficient vectors A4,D4, etc...
     starting_xind = [0,4,8,16]
     max_len = len(x)
-    approx_len = 4
-    wt_levels = 3
 
     # the lengths are defined by len(LEVEL)/2+2 = len(LEVEL+1)
     vec_lengths = find_mldwt_vector_lenghts(sig,'db3',4,'symmetric')
     print(vec_lengths)
-
-    # # get the starting indicies of the coefficient vectors A4,D4, etc...
-    # starting_xind = [0,12,24,44,79]
-
-
 
 
 # Begin the SPIHT algorithm
@@ -129,7 +153,9 @@ if __name__ == "__main__":
     print('strout = ', strout)
 
     lsp = []
-    lip = [ x for x in range(approx_len)] # the set of all roots coordinates in the top-most lowpass subband
+# todo: need to fix this function to account for the correct length of A4 and D4
+    # lip = [ x for x in range(dwt_coeff_len['A4'])] # the set of all roots coordinates in the top-most lowpass subband
+    lip = [ x for x in range(4)] # the set of all roots coordinates in the top-most lowpass subband
 
     lis = [ ['A', x] for x in lip[-2:]]
 
