@@ -29,4 +29,22 @@ Definitions
 * LIS =  the List of Insignificant Sets which contains the coordinates of of the roots of insignificant subtrees
   LIS has two types, A and B, relating to the cases D[i] and L[i], respectively.
 
+## Step 1:
+compute and output k, where k is k = |log2(max(x))|
+
+from userguide p270
+
+
+Since the msp430 "...hardware multiplier has two 32-bit operand registers – operand one (OP1) and operand two (OP2),
+and a 64-bit result register accessible through registers RES0 to RES3. For compatibility with the 16×16
+hardware multiplier, the result of a 8-bit or 16-bit operation is accessible through RESLO, RESHI, and
+SUMEXT, as well. RESLO stores the low word of the 16×16-bit result, RESHI stores the high word of the
+result, and SUMEXT stores information about the result."
+
+Therefore, the max fixed point float is a 32-bit number with the decimal at bit 15 and a signed bit at bit 32. Thus the max magnitude is 15 bits. log2(2^(15-1) = 16384.
+
+* The max output of k is 2^k = 15 = b'1111' , which can be represented in 4 bits. Therefore, the output from step 1 will be 4 bits.
+
+
+
 

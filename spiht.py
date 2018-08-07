@@ -56,6 +56,10 @@ def S(x, k):
 
     return thres
 
+def D(x_index):
+    """Returns a set of all offsprint in all later subbands of coefficient x[x_index]"""
+    return ([x_index, xindex + 1])
+
 def get_lists():
     print ('The LIP is:'  , lip)
     print ('The LIS is: ' , lis)
@@ -97,8 +101,9 @@ if __name__ == "__main__":
     approx_len = 4
     wt_levels = 3
 
-    # vec_lengths = find_mldwt_vector_lenghts(sig,'db3',4,'symmetric')
-    # print(vec_lengths)
+    # the lengths are defined by len(LEVEL)/2+2 = len(LEVEL+1)
+    vec_lengths = find_mldwt_vector_lenghts(sig,'db3',4,'symmetric')
+    print(vec_lengths)
 
     # # get the starting indicies of the coefficient vectors A4,D4, etc...
     # starting_xind = [0,12,24,44,79]
@@ -109,9 +114,6 @@ if __name__ == "__main__":
 # Begin the SPIHT algorithm
     lip  = []
     lsp  = []
-    lisa = []
-    lisb = []
-
     strout = ''
 
 
@@ -120,7 +122,12 @@ if __name__ == "__main__":
 
     # find the threshold, k
     k = int(np.abs(np.log2(np.max(np.abs(x)))))
-    # print('Threshold',k)
+
+    strout += format(k, '04b')
+    strout += ' '                   # add a space for readability
+    print('Threshold, K= ',k)
+    print('strout = ', strout)
+
     lsp = []
     lip = [ x for x in range(approx_len)] # the set of all roots coordinates in the top-most lowpass subband
 
@@ -150,9 +157,30 @@ if __name__ == "__main__":
         lip.pop(i)
 
 
-
+    print('Step 2:')
     get_lists()
     # WORKS TO HERE
 
 # STEP 3: SORTING PASS IN LIS
+
+    for entry in lis:
+
+        print('entry: ',entry)
+        if entry[0] == 'A':
+
+            # test the threshold and send a 1 if significant
+            index = entry[1]
+            print('index: ', index)
+            print('x[index]: ', x[index])
+            thres =  S(x[index],k)
+            strout += str(thres)
+
+            # test the offsprint of entry if thres > 0
+            if thres > 0:
+                print('yes')
+
+    print('Step 3:')
+    get_lists()
+
+
 
