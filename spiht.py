@@ -59,6 +59,12 @@ def S(x, k):
 def get_LIP():
     print ('The LIP is:', lip)
 
+def get_LISA():
+    print ('The LISA is: ',lisa)
+
+def signbit(x):
+    """ Returns 1 if x<0"""
+    return int(x < 0)
 
 
 #******************************************************************************************
@@ -107,7 +113,7 @@ if __name__ == "__main__":
     strout = ''
 
 
-# STEP 0
+# STEP 1
     # find the length of the wt vector
 
     # find the threshold, k
@@ -116,16 +122,25 @@ if __name__ == "__main__":
     lsp = []
     lip = [ x for x in range(approx_len)] # the set of all roots coordinates in the top-most lowpass subband
 
-    lisa = [2,3]
+    lisalen = approx_len/2
+    lisa = lip[-2:]
 
-# STEP 1: SORTING PASS
+# STEP 2: SORTING PASS
     for i in lip:
-        # *********************************** this step isn't working yet ****************************
+
+        # check the threshold
         thres =  S(x[i],k)
         strout += str(thres)
 
+        if thres > 0:
+
+            strout += str(signbit(x[i]))
+
+
+
     get_LIP()
-    print('Step3 output:', strout)
+    get_LISA()
+    print('Step2 output:', strout)
+    # WORKS TO HERE
 
-
-
+# STEP 3:
