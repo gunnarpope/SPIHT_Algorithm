@@ -58,9 +58,8 @@ def S(x, k):
 
 def get_lists():
     print ('The LIP is:'  , lip)
-    print ('The LISA is: ',lisa)
-    print ('The LISB is: ',lisb)
-    print ('The LSP is: ' ,lsp)
+    print ('The LIS is: ' , lis)
+    print ('The LSP is: ' , lsp)
     print ('The output is:', strout)
 
 
@@ -125,12 +124,11 @@ if __name__ == "__main__":
     lsp = []
     lip = [ x for x in range(approx_len)] # the set of all roots coordinates in the top-most lowpass subband
 
-    lisalen = approx_len/2
-    lisa = lip[-2:]
+    lis = [ ['A', x] for x in lip[-2:]]
 
     get_lists()
 
-# STEP 2: SORTING PASS
+# STEP 2: SORTING PASS IN LIP
     index_to_append = []
     for i in lip:
 
@@ -156,4 +154,5 @@ if __name__ == "__main__":
     get_lists()
     # WORKS TO HERE
 
-# STEP 3:
+# STEP 3: SORTING PASS IN LIS
+
