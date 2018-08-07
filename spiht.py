@@ -56,11 +56,14 @@ def S(x, k):
 
     return thres
 
-def get_LIP():
-    print ('The LIP is:', lip)
-
-def get_LISA():
+def get_lists():
+    print ('The LIP is:'  , lip)
     print ('The LISA is: ',lisa)
+    print ('The LISB is: ',lisb)
+    print ('The LSP is: ' ,lsp)
+    print ('The output is:', strout)
+
+
 
 def signbit(x):
     """ Returns 1 if x<0"""
@@ -125,7 +128,10 @@ if __name__ == "__main__":
     lisalen = approx_len/2
     lisa = lip[-2:]
 
+    get_lists()
+
 # STEP 2: SORTING PASS
+    index_to_append = []
     for i in lip:
 
         # check the threshold
@@ -133,14 +139,21 @@ if __name__ == "__main__":
         strout += str(thres)
 
         if thres > 0:
-
+            # output the sign bit (1 if x<0)
             strout += str(signbit(x[i]))
 
+            # add i to LSP and pop from LIP
+            index_to_append.append(i)
 
 
-    get_LIP()
-    get_LISA()
-    print('Step2 output:', strout)
+    # only do this after the iteration in lip is finished
+    for i in index_to_append:
+        lsp.append(i)
+        lip.pop(i)
+
+
+
+    get_lists()
     # WORKS TO HERE
 
 # STEP 3:
