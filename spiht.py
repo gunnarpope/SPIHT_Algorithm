@@ -56,24 +56,24 @@ def S(x, k):
 
     return thres
 
-def D_dyadic(index,level):
+def D_dyadic(index, level):
     """
     Inputs:
-        int index = indicies of coefficient vector of A5, D5, etc..
-        int level = the transformation level
+        int index = indicies of coefficient vector of A5, D5, etc.. starting from index=0
+        int level = the transformation level, ranging from level to 1
     Output:
         Returns a list of sets that are the offspring of x[i]
     """
     offspring_sets = []
+    nextlevel = level - 1
+    first = 2*index
+    second = first + 1
+    offspring_sets.append([first, second])
 
-    for L in range(level + 1)[1:]:
-        first = x_index
-        second = first + 1
-        offspring_sets.append([first, second])
-
+    # todo: add recursive search for coeffs
     return offspring_sets
 
-def Dsym(index, level):
+def Dsym(index, level, dwt_coef_lengths):
     print('todo:...')
 
 
