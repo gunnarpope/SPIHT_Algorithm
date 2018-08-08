@@ -53,6 +53,11 @@ def S(x, k):
         thres = 1
     else:
         thres = 0
+# todo: maybe implement bitwise threshold comparison?
+    # >> > bin(a | int('0b010', 2))
+    # '0b11111'
+    # >> > bin(a & int('0b010', 2))
+    # '0b0'
 
     return thres
 
@@ -151,8 +156,8 @@ if __name__ == "__main__":
     strout += ' '                   # add a space for readability
     print('Threshold, K= ',k)
     print('strout = ', strout)
-
     lsp = []
+
 # todo: need to fix this function to account for the correct length of A4 and D4
     # lip = [ x for x in range(dwt_coeff_len['A4'])] # the set of all roots coordinates in the top-most lowpass subband
     lip = [ x for x in range(4)] # the set of all roots coordinates in the top-most lowpass subband
@@ -186,27 +191,27 @@ if __name__ == "__main__":
     print('Step 2:')
     get_lists()
     # WORKS TO HERE
-
-# STEP 3: SORTING PASS IN LIS
-
-    for entry in lis:
-
-        print('entry: ',entry)
-        if entry[0] == 'A':
-
-            # test the threshold and send a 1 if significant
-            index = entry[1]
-            print('index: ', index)
-            print('x[index]: ', x[index])
-            thres =  S(x[index],k)
-            strout += str(thres)
-
-            # test the offsprint of entry if thres > 0
-            if thres > 0:
-                print('yes')
-
-    print('Step 3:')
-    get_lists()
+#
+# # STEP 3: SORTING PASS IN LIS
+#
+#     for entry in lis:
+#
+#         print('entry: ',entry)
+#         if entry[0] == 'A':
+#
+#             # test the threshold and send a 1 if significant
+#             index = entry[1]
+#             print('index: ', index)
+#             print('x[index]: ', x[index])
+#             thres =  S(x[index],k)
+#             strout += str(thres)
+#
+#             # test the offsprint of entry if thres > 0
+#             if thres > 0:
+#                 print('yes')
+#
+#     print('Step 3:')
+#     get_lists()
 
 
 
