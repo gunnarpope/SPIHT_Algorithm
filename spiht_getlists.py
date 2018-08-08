@@ -1,4 +1,6 @@
 # spiht_sets.py
+# by: gunnar pope
+
 
 
 def O(i,N):
@@ -25,9 +27,17 @@ def D(i,N):
         if j < ((N-1)/2):
             descendents.append( D(j,N) )
 
-    return flatten(descendents,a=[])
+    return sorted(flatten(descendents,a=[]))
+
+def L(i,N):
+    """Remove the first """
+    return D(i,N)[2:]
 
 def flatten(l, a):
+    """
+    print(flatten([ [[1, [1,1, [3, [4,5,]]]], 2, 3], [4, 5],6 ] , []))
+    # [1, 1, 1, 3, 4, 5, 2, 3, 4, 5, 6]
+    """
     for i in l:
         if isinstance(i, list):
             flatten(i, a)
@@ -40,7 +50,6 @@ def flatten(l, a):
 
 if __name__ == '__main__':
 
-    import numpy as np
     print("Find the descendents for a 32 element dwt with dyadic scalling")
     N = 32
     for i in range(17):
@@ -48,6 +57,6 @@ if __name__ == '__main__':
 
     print("Find the descendents of index=3, ie D(3)")
     i = 3
-    output = D(i,N)
-    print(output)
-
+    print('O(i): ', O(i,N))
+    print('D(i): ', D(i,N))
+    print('L(i): ',L(i,N))
