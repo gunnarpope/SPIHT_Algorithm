@@ -175,7 +175,8 @@ if __name__ == "__main__":
 
     get_lists()
 
-# STEP 1: SORTING PASS IN LIP
+while (k > 0):
+    # STEP 1: SORTING PASS IN LIP
     index_to_append = []
     for i in lip:
 
@@ -270,13 +271,8 @@ if __name__ == "__main__":
             else:
                 strout += str(0)
 
-    if k == 0:
-        exit()
-    else:
-        k -= 1
-
-
-
+    get_lists()
+    k -= 1
 
             # for d in D(i, N):
             # thres =  S(x[index],k)
@@ -286,7 +282,6 @@ if __name__ == "__main__":
             # if thres > 0:
             #     print('yes')
 
-    get_lists()
 
     # get_ODL(3,len(x))
 
