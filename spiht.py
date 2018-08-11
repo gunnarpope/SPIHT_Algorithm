@@ -94,6 +94,15 @@ def signbit(x):
     """ Returns 1 if x<0"""
     return int(x < 0)
 
+def get_LIS_index_and_type(LIS_entry):
+    """Input: a LIS entry in the form of ['A', index]
+       output: [ type, index]
+    """
+    type  = LIS_entry[0]
+    index = LIS_entry[1]
+
+    return [ type, index]
+
 
 #******************************************************************************************
 #******************************************************************************************
@@ -146,7 +155,7 @@ if __name__ == "__main__":
     strout = ''
 
 
-# STEP 1
+# STEP 0
     # find the length of the wt vector
 
     # find the threshold, k
@@ -166,7 +175,7 @@ if __name__ == "__main__":
 
     get_lists()
 
-# STEP 2: SORTING PASS IN LIP
+# STEP 1: SORTING PASS IN LIP
     index_to_append = []
     for i in lip:
 
@@ -188,30 +197,67 @@ if __name__ == "__main__":
         lip.pop(i)
 
 
-    print('Step 2:')
+    print('Step 1:')
     get_lists()
     # WORKS TO HERE
 
-# STEP 3: SORTING PASS IN LIS
-#
-#     for entry in lis:
-#
-#         print('entry: ',entry)
-#         if entry[0] == 'A':
-#
-#             # test the threshold and send a 1 if significant
-#             index = entry[1]
-#             print('index: ', index)
-#             print('x[index]: ', x[index])
-#             thres =  S(x[index],k)
-#             strout += str(thres)
-#
-#             # test the offsprint of entry if thres > 0
-#             if thres > 0:
-#                 print('yes')
-#
-#     print('Step 3:')
-#     get_lists()
+    # add a space for readability, but todo: remove this later
+    strout += ' '
 
-    get_ODL(3,len(x))
+# STEP 2: SORTING PASS IN LIS
+
+    lis_index = 0
+
+    for entry in lis:               # step 5
+
+        (type, i) = entry
+
+        if type == 'A':
+
+            # test the threshold and send a 1 if significant
+            print('index: ', i)
+            print('x[index]: ', x[i])
+            get_ODL(i,max_len)
+
+            # find out if any descendents are significant (either 1 or 0)
+            if ( max([ S(x[p],k) for p in D(i,max_len)]) ): #step 7
+                strout += '1'
+
+                for j in O(i,max_len):
+                    thres = S(j,k)
+                    strout += str(thres)     # step 10
+
+                    if (thres > 0):
+                        lsp.append(j)
+                        strout += signbit(x[j])
+                    else:
+                        lip.append(j)          # step 12
+
+        if ( L(i,max_len) == []):
+            # remove i from LIS
+            print('step 13: ',L(i,max_len))
+            lis.pop(lis_index)          # step 13
+        else:
+            lis.append(['B', i])        # step 14
+            lis.pop(lis_index)          # step 13
+            break                       # go to step 5
+
+        lis_index += 1
+
+
+
+
+
+            # for d in D(i, N):
+            # thres =  S(x[index],k)
+            # strout += str(thres)
+
+            # test the offsprint of entry if thres > 0
+            # if thres > 0:
+            #     print('yes')
+
+    print('Step 3:')
+    get_lists()
+
+    # get_ODL(3,len(x))
 
