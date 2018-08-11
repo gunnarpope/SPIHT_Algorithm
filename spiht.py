@@ -30,7 +30,7 @@
 #   LIS has two types, A and B, relating to the cases D[i] and L[i], respectively.
 
 
-
+from spiht_dyadic import O, D, L, get_ODL
 
 
 def find_mldwt_vector_lenghts(signal,wavelet,level,mode):
@@ -191,8 +191,8 @@ if __name__ == "__main__":
     print('Step 2:')
     get_lists()
     # WORKS TO HERE
-#
-# # STEP 3: SORTING PASS IN LIS
+
+# STEP 3: SORTING PASS IN LIS
 #
 #     for entry in lis:
 #
@@ -213,5 +213,5 @@ if __name__ == "__main__":
 #     print('Step 3:')
 #     get_lists()
 
-
+    get_ODL(3,len(x))
 
