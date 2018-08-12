@@ -247,17 +247,17 @@ while (k > 0):
 
                     sorting_indices_used.append(j)
 
-                    print('L(i,max_len): ', L(i,max_len), ' i= ', i)
-                    if ( L(i,max_len) == []):
-                        # remove i from LIS
-                        lis.pop(lis_index)          # step 14
-                    else:
+                print('L(i,max_len): ', L(i,max_len), ' i= ', i)
+                if ( L(i,max_len) == []):
+                    # remove i from LIS
+                    lis.pop(lis_index)          # step 14
+                else:
 
-                        lis.pop(lis_index)          # remove entry from front on LIS list
-                        lis.append(['B', i])        # append it to the end of the LIS as type-B entry
-                        lis_index = 0               # restart the LIS loop from the beginning
-                        get_lists()
-                        break                       # go to step 5
+                    lis.pop(lis_index)          # remove entry from front on LIS list
+                    lis.append(['B', i])        # append it to the end of the LIS as type-B entry
+                    lis_index = 0               # restart the LIS loop from the beginning
+                    get_lists()
+                    continue                       # go to step 5
             else:
                 output(0)
                 lis_index += 1
@@ -277,7 +277,8 @@ while (k > 0):
                     lis.append( ['A', j] )      # step 19
                 lis.pop(lis_index)
 
-            lis_index += 1
+            # lis_index += 1
+            # no need to update the lis_index since a number was popped from the list
 
     # Refinement pass
     for i in lsp:
