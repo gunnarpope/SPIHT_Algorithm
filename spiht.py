@@ -236,7 +236,7 @@ while (k > 0):
 
                 for j in O(i,max_len):
 
-                    output( S(j,k) )
+                    output( S(x[j],k) )
 
                     if (thres > 0):
                         lsp.append(j)
@@ -266,7 +266,7 @@ while (k > 0):
 
 
 
-        if ( type == 'B'):
+        elif ( type == 'B'):
             # strout += str( max([S(x[p], k) for p in L(i, max_len)] )    # step 17
             thres = max([S(x[p], k) for p in L(i, max_len)])   # step 17
             print('S(L[i]): ',thres)
@@ -276,23 +276,23 @@ while (k > 0):
                 for j in O(i,max_len):
                     lis.append( ['A', j] )      # step 19
                 lis.pop(lis_index)
+                lis_index -= 1                  # this is needed to account for popping an entry from the list
 
-            # lis_index += 1
-            # no need to update the lis_index since a number was popped from the list
+            lis_index += 1
 
     # Refinement pass
-    for i in lsp:
-        # exclude indices used in the sorting pass
-        if ( i in sorting_indices_used):
-            # output the kth bit of |x[i]|
-            # to a binary AND with a single bit
-            # a = -5 = -0b101 --> abs(a) & (1 << 1) = 0
-            # a = -5 = -0b101 --> abs(a) & (1 << 2) = 4
-            kbit = abs(x[i]) & (1 << (k-1))
-            if kbit > 0:
-                output(1)
-            else:
-                output(0)
+    # for i in lsp:
+    #     # exclude indices used in the sorting pass
+    #     if ( i in sorting_indices_used):
+    #         # output the kth bit of |x[i]|
+    #         # to a binary AND with a single bit
+    #         # a = -5 = -0b101 --> abs(a) & (1 << 1) = 0
+    #         # a = -5 = -0b101 --> abs(a) & (1 << 2) = 4
+    #         kbit = abs(x[i]) & (1 << (k-1))
+    #         if kbit > 0:
+    #             output(1)
+    #         else:
+    #             output(0)
 
     get_lists()
     # k -= 1
