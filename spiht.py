@@ -114,13 +114,18 @@ def output(bit):
     print('Settings for output: ')
     get_lists()
 
-    if (predicted_output[:len(strout)] == strout):
-        print('**************Valid Output****************')
-        print('Output: ', strout)
-    else:
-        print('!!!!!!!!!!!!!!!!!!!! OUTPUT FAILS !!!!!!!!!!!!!!!!!!!!!!!')
-        print('Expected: ', predicted_output[:len(strout)])
-        print('Computed: ', strout)
+    print('Output: ', strout)
+
+# use this to test the code shown in (Lu, Kim, Pearlman 2000, Wavelet Compression of ECG signal by Set Partition
+# in Hierarchical Trees Algorithm
+
+    # if (predicted_output[:len(strout)] == strout):
+    #     print('**************Valid Output****************')
+    #     print('Output: ', strout)
+    # else:
+    #     print('!!!!!!!!!!!!!!!!!!!! OUTPUT FAILS !!!!!!!!!!!!!!!!!!!!!!!')
+    #     print('Expected: ', predicted_output[:len(strout)])
+    #     print('Computed: ', strout)
 
 
 #******************************************************************************************
@@ -195,7 +200,7 @@ if __name__ == "__main__":
     get_lists()
 
 ######################################### BEGIN THE SORTING PASS ##############################
-    while (k > 0):
+    while (k >= 0):
 
         lsp_new = []
 
@@ -334,8 +339,12 @@ if __name__ == "__main__":
         print('Reduce Threshold: K=' ,k)
         print('#############################################')
 
-        if (k == 3):
-            break
+        # if (k == 3):
+        #     break
 
+    # when the algorithm is done
+    print('The length of the embedded output string', len(strout), ' bits')
+    print('The signed 32bit floats is (32 coeffs * 4 bytes/ea) = ', 32*4, 'bits')
+    print('The rough compression ratio is: ', (32*4.0)/(len(strout)))
 
 
