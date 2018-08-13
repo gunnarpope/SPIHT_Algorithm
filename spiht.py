@@ -83,12 +83,12 @@ def Dsym(index, level, dwt_coef_lengths):
 
 
 def get_lists():
-    global lip, lis, lsp, strout, x, lis_index
+    global lip, lis, lsp_old, strout, x, lis_index
     print ('The lis_index', lis_index)
     print ('x[lis_index]', x[lis_index])
     print ('The LIP is:'  , lip)
     print ('The LIS is: ' , lis)
-    print ('The LSP is: ' , lsp)
+    print ('The LSP is: ' , (lsp_old + lsp_new))
 
 
 
@@ -163,7 +163,6 @@ if __name__ == "__main__":
 
 # Begin the SPIHT algorithm
     lip  = []
-    lsp  = []
     strout = ''
     lis_index = 0
 
@@ -176,7 +175,8 @@ if __name__ == "__main__":
     strout += format(k, '04b')
     strout += ' '                   # add a space for readability
     print('Threshold, K= ',k)
-    lsp = []
+    lsp_old = []
+    lsp_new = []
 
 # todo: need to fix this function to account for the correct length of A4 and D4
     # lip = [ x for x in range(dwt_coeff_len['A4'])] # the set of all roots coordinates in the top-most lowpass subband
@@ -186,132 +186,142 @@ if __name__ == "__main__":
 
     get_lists()
 
-while (k > 0):
-    # STEP 1: SORTING PASS IN LIP
-    step += 1
-    index_to_append = []
-    for i in lip:
+######################################### BEGIN THE SORTING PASS ##############################
+    while (k > 0):
 
-        # check the threshold
-        thres =  S(x[i],k)
-        # strout += str(thres)
-        output(thres)
+        lsp_new = []
 
-        if thres > 0:
-            # output the sign bit (1 if x<0)
-            # strout += str(signbit(x[i]))
-            output(signbit(x[i]))
+        # STEP 1: SORTING PASS IN LIP
+        step += 1
+        index_to_append = []
+        for i in lip:
 
-            # add i to LSP and pop from LIP
-            index_to_append.append(i)
+            # check the threshold
+            thres =  S(x[i],k)
+            # strout += str(thres)
+            output(thres)
+            print('S( x[', i,']) from LIP= ', thres)
 
+            if thres > 0:
+                # output the sign bit (1 if x<0)
+                # strout += str(signbit(x[i]))
+                sign = signbit(x[i])
+                output(sign)
+                print('Output Signbit= ', sign )
 
-    # only do this after the iteration in lip is finished
-    for i in index_to_append:
-        lsp.append(i)
-        ind = lip.index(i)
-        lip.pop(ind)
+                # add i to LSP and pop from LIP
+                index_to_append.append(i)
 
-
-    # add a space for readability, but todo: remove this later
-    strout += ' '
-
-# STEP 2: SORTING PASS IN LIS
-    step += 1
-    sorting_indices_used = []
-
-    while ( lis_index < len(lis) ):             # step 5
-
-        (type, i) = lis[lis_index]
-
-        if type == 'A':
-
-            # test the threshold and send a 1 if significant
+        # only do this after the iteration in lip is finished
+        for i in index_to_append:
+            lsp_new.append(i)
+            ind = lip.index(i)
+            lip.pop(ind)
 
 
-            # find out if any descendents are significant (either 1 or 0)
-            sig_descendents = max([ S(x[p],k) for p in D(i,max_len)])
-            print('D(c[i]): ', sig_descendents, ' i= ', i)
+        # add a space for readability, but todo: remove this later
+        strout += ' '
 
-            if (sig_descendents >0  ): #step 7
-                output(1)
-                print('D[ci] = 1')
-                print('Sk(x[i=',i, '])=1')
+    # STEP 2: SORTING PASS IN LIS
+        step += 1
 
-                for j in O(i,max_len):
+        while ( lis_index < len(lis) ):             # step 5
 
-                    thres = S(x[j], k)
-                    output( thres )
-                    print('Sk(x[i=',j, '])=', thres)
+            (type, i) = lis[lis_index]
 
-                    if (thres > 0):
-                        lsp.append(j)
-                        output(signbit(x[j]))
-                        print('Offspring Signbit')
+            if type == 'A':
+
+                # test the threshold and send a 1 if significant
+
+
+                # find out if any descendents are significant (either 1 or 0)
+                sig_descendents = max([ S(x[p],k) for p in D(i,max_len)])
+
+                if (sig_descendents >0  ): #step 7
+                    output(1)
+                    print('Sk(D(x[i=',i, ']))=1')
+
+                    for j in O(i,max_len):
+
+                        thres = S(x[j], k)
+                        output( thres )
+                        print('Sk(x[i=',j, '])=', thres)
+
+                        if (thres > 0):
+                            lsp_new.append(j)
+                            output(signbit(x[j]))
+                            print('Offspring Signbit')
+                        else:
+                            lip.append(j)          # step 12
+
+
+
+                    # print('L(i,max_len): ', L(i,max_len), ' i= ', i)
+                    if ( L(i,max_len) == []):
+                        # remove i from LIS
+                        lis.pop(lis_index)          # step 14
                     else:
-                        lip.append(j)          # step 12
 
-
-                    sorting_indices_used.append(j)
-
-                # print('L(i,max_len): ', L(i,max_len), ' i= ', i)
-                if ( L(i,max_len) == []):
-                    # remove i from LIS
-                    lis.pop(lis_index)          # step 14
+                        lis.pop(lis_index)          # remove entry from front on LIS list
+                        lis.append(['B', i])        # append it to the end of the LIS as type-B entry
+                        # lis_index = 0               # restart the LIS loop from the beginning
+                        # get_lists()
+                        continue                       # go to step 5
                 else:
+                    output(0)
+                    print('Sk(D(x[i=',i, ']))=0')
 
-                    lis.pop(lis_index)          # remove entry from front on LIS list
-                    lis.append(['B', i])        # append it to the end of the LIS as type-B entry
-                    # lis_index = 0               # restart the LIS loop from the beginning
-                    # get_lists()
-                    continue                       # go to step 5
-            else:
-                output(0)
-                print('Sk(x[i=',i,'])=0')
-
-            # lis_index += 1
+                # lis_index += 1
 
 
 
 
 
-        elif ( type == 'B'):
-            # strout += str( max([S(x[p], k) for p in L(i, max_len)] )    # step 17
-            thres = max([S(x[p], k) for p in L(i, max_len)])   # step 17
-            # print('S(L[i]): ',thres)
-            output( thres )
-            print('Tested S(L(x[i])')
+            elif ( type == 'B'):
+                # strout += str( max([S(x[p], k) for p in L(i, max_len)] )    # step 17
+                thres = max([S(x[p], k) for p in L(i, max_len)])   # step 17
+                # print('S(L[i]): ',thres)
+                output( thres )
+                print('S(L(x[',i,'])= ', thres)
 
-            if (thres > 0):
-                for j in O(i,max_len):
-                    lis.append( ['A', j] )      # step 19
-                lis.pop(lis_index)
-                lis_index -= 1                  # this is needed to account for popping an entry from the list
+                if (thres > 0):
+                    for j in O(i,max_len):
+                        lis.append( ['A', j] )      # step 19
+                    lis.pop(lis_index)
+                    lis_index -= 1                  # this is needed to account for popping an entry from the list
 
-            # lis_index += 1
+                # lis_index += 1
 
-        lis_index += 1
+            lis_index += 1
 
-    # # Refinement pass
-    # for i in lsp:
-    #     # exclude indices used in the sorting pass
-    #     if ( i in sorting_indices_used):
-    #         # output the kth bit of |x[i]|
-    #         # to a binary AND with a single bit
-    #         # a = -5 = -0b101 --> abs(a) & (1 << 1) = 0
-    #         # a = -5 = -0b101 --> abs(a) & (1 << 2) = 4
-    #         kbit = abs(x[i]) & (1 << (k-1))
-    #         if kbit > 0:
-    #             output(1)
-    #         else:
-    #             output(0)
+        # end sorting pass
+        lis_index = 0                   # start the lis from the beginning
 
-    # get_lists()
-    k -= 1
-    print('Reduce Threshold: K=' ,k)
-    if (k == 4):
-        k = 0
-    # k = 0  # used to stop the interation
+########################################### REFINEMENT PASS #########################################
+        if (lsp_old != []):
+            for i in lsp_old:
+                # exclude indices used in the sorting pass
+                # output the kth bit of |x[i]|
+                # to a binary AND with a single bit
+                # a = -5 = -0b101 --> abs(a) & (1 << 1) = 0
+                # a = -5 = -0b101 --> abs(a) & (1 << 2) = 4
+                kbit = abs(x[i]) & (1 << (k-1))
+                if kbit > 0:
+                    output(1)
+                else:
+                    output(0)
+
+        lsp_old = lsp_old + lsp_new     # concantinate the old and new list
+
+
+        # get_lists()
+        k -= 1                          # reduce the threshold
+        print('#############################################')
+        print('Reduce Threshold: K=' ,k)
+        print('#############################################')
+
+        if (k == 3):
+            break
 
 
 
