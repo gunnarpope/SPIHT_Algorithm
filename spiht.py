@@ -83,10 +83,12 @@ def Dsym(index, level, dwt_coef_lengths):
 
 
 def get_lists():
+    global lip, lis, lsp, strout, x, lis_index
+    print ('The lis_index', lis_index)
+    print ('x[lis_index]', x[lis_index])
     print ('The LIP is:'  , lip)
     print ('The LIS is: ' , lis)
     print ('The LSP is: ' , lsp)
-    print ('The output is:', strout)
 
 
 
@@ -108,9 +110,10 @@ def output(bit):
     global step
 
     strout += str(bit)
-    print('Step: ', step)
-    print('Output String: ', strout)
+    print('')
+    print('Settings for output: ')
     get_lists()
+    print('Output String: ', strout)
 
 
 #******************************************************************************************
@@ -162,7 +165,7 @@ if __name__ == "__main__":
     lip  = []
     lsp  = []
     strout = ''
-
+    lis_index = 0
 
 # STEP 0
     # find the length of the wt vector
@@ -215,7 +218,6 @@ while (k > 0):
 
 # STEP 2: SORTING PASS IN LIS
     step += 1
-    lis_index = 0
     sorting_indices_used = []
 
     while ( lis_index < len(lis) ):             # step 5
@@ -233,21 +235,26 @@ while (k > 0):
 
             if (sig_descendents >0  ): #step 7
                 output(1)
+                print('D[ci] = 1')
+                print('Sk(x[i=',i, '])=1')
 
                 for j in O(i,max_len):
 
-                    output( S(x[j],k) )
+                    thres = S(x[j], k)
+                    output( thres )
+                    print('Sk(x[i=',j, '])=', thres)
 
                     if (thres > 0):
                         lsp.append(j)
                         output(signbit(x[j]))
+                        print('Offspring Signbit')
                     else:
                         lip.append(j)          # step 12
 
 
                     sorting_indices_used.append(j)
 
-                print('L(i,max_len): ', L(i,max_len), ' i= ', i)
+                # print('L(i,max_len): ', L(i,max_len), ' i= ', i)
                 if ( L(i,max_len) == []):
                     # remove i from LIS
                     lis.pop(lis_index)          # step 14
@@ -255,12 +262,14 @@ while (k > 0):
 
                     lis.pop(lis_index)          # remove entry from front on LIS list
                     lis.append(['B', i])        # append it to the end of the LIS as type-B entry
-                    lis_index = 0               # restart the LIS loop from the beginning
-                    get_lists()
+                    # lis_index = 0               # restart the LIS loop from the beginning
+                    # get_lists()
                     continue                       # go to step 5
             else:
                 output(0)
-                lis_index += 1
+                print('Sk(x[i=',i,'])=0')
+
+            # lis_index += 1
 
 
 
@@ -269,8 +278,9 @@ while (k > 0):
         elif ( type == 'B'):
             # strout += str( max([S(x[p], k) for p in L(i, max_len)] )    # step 17
             thres = max([S(x[p], k) for p in L(i, max_len)])   # step 17
-            print('S(L[i]): ',thres)
+            # print('S(L[i]): ',thres)
             output( thres )
+            print('Tested S(L(x[i])')
 
             if (thres > 0):
                 for j in O(i,max_len):
@@ -278,9 +288,11 @@ while (k > 0):
                 lis.pop(lis_index)
                 lis_index -= 1                  # this is needed to account for popping an entry from the list
 
-            lis_index += 1
+            # lis_index += 1
 
-    # Refinement pass
+        lis_index += 1
+
+    # # Refinement pass
     # for i in lsp:
     #     # exclude indices used in the sorting pass
     #     if ( i in sorting_indices_used):
@@ -294,9 +306,12 @@ while (k > 0):
     #         else:
     #             output(0)
 
-    get_lists()
-    # k -= 1
-    k = 0  # used to stop the interation
+    # get_lists()
+    k -= 1
+    print('Reduce Threshold: K=' ,k)
+    if (k == 4):
+        k = 0
+    # k = 0  # used to stop the interation
 
 
 
