@@ -113,7 +113,14 @@ def output(bit):
     print('')
     print('Settings for output: ')
     get_lists()
-    print('Output String: ', strout)
+
+    if (predicted_output[:len(strout)] == strout):
+        print('**************Valid Output****************')
+        print('Output: ', strout)
+    else:
+        print('!!!!!!!!!!!!!!!!!!!! OUTPUT FAILS !!!!!!!!!!!!!!!!!!!!!!!')
+        print('Expected: ', predicted_output[:len(strout)])
+        print('Computed: ', strout)
 
 
 #******************************************************************************************
@@ -141,6 +148,7 @@ if __name__ == "__main__":
     # Vector from Lu et al. 2000, "Wavelet Compression of ECG Signals by the SPIHT Algorithm", p851
     # this is a 4-level dwt that uses no padding and dyadic scaling
     x = [59,-48,-25,21,12,13,-9,11,43,-7,8,6,-5,4,2,-3,22,11,5,-7,6,1,5,2,0,-2,-1,4,4,-2,3,1]
+    predicted_output = '010110110010001110000111000000111000110'
 
     # the length of the A4,D4,D3,D2,D1 vectors
     dwt_coeff_len = { 'A4' : 2,
@@ -173,7 +181,7 @@ if __name__ == "__main__":
     k = int(np.abs(np.log2(np.max(np.abs(x)))))
 
     strout += format(k, '04b')
-    strout += ' '                   # add a space for readability
+    # strout += ' '                   # add a space for readability
     print('Threshold, K= ',k)
     lsp_old = []
     lsp_new = []
@@ -220,7 +228,7 @@ if __name__ == "__main__":
 
 
         # add a space for readability, but todo: remove this later
-        strout += ' '
+        # strout += ' '
 
     # STEP 2: SORTING PASS IN LIS
         step += 1
@@ -260,12 +268,14 @@ if __name__ == "__main__":
                     if ( L(i,max_len) == []):
                         # remove i from LIS
                         lis.pop(lis_index)          # step 14
+                        continue                    # !!!!! this does not increment lis_index due to pop off lis list!!
                     else:
 
                         lis.pop(lis_index)          # remove entry from front on LIS list
                         lis.append(['B', i])        # append it to the end of the LIS as type-B entry
                         # lis_index = 0               # restart the LIS loop from the beginning
                         # get_lists()
+                        # lis_index += 1
                         continue                       # go to step 5
                 else:
                     output(0)
@@ -288,8 +298,8 @@ if __name__ == "__main__":
                     for j in O(i,max_len):
                         lis.append( ['A', j] )      # step 19
                     lis.pop(lis_index)
-                    lis_index -= 1                  # this is needed to account for popping an entry from the list
-
+                    # lis_index -= 1                  # this is needed to account for popping an entry from the list
+                    continue                          # since a value in the lis is removed, stay at the same index
                 # lis_index += 1
 
             lis_index += 1
