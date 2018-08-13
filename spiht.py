@@ -315,11 +315,15 @@ if __name__ == "__main__":
                 # to a binary AND with a single bit
                 # a = -5 = -0b101 --> abs(a) & (1 << 1) = 0
                 # a = -5 = -0b101 --> abs(a) & (1 << 2) = 4
-                kbit = abs(x[i]) & (1 << (k-1))
+                print('x[i]', x[i])
+                kbit = abs(x[i]) & (1 << (k))
+                print('kbit',kbit)
                 if kbit > 0:
                     output(1)
+                    print('Refinement: Sk(|x[',i,']|)= ', 1)
                 else:
                     output(0)
+                    print('Refinement: Sk(|x[',i,']|)= ', 0)
 
         lsp_old = lsp_old + lsp_new     # concantinate the old and new list
 
